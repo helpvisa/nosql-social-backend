@@ -79,23 +79,21 @@ const userController = {
     },
 
     // update a single user
-    updateUser({ params, body }, res) {
-        // don't give us updated name; we want to use the old one for changing thoughts
-        User.findOneAndUpdate({ _id: params.id }, body, { new: false, runValidators: true })
+    async updateUser({ params, body }, res) {
+        User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
         .then(userData => {
             if (!userData) {
                 res.status(404).json({ message: "No user found." });
                 return;
             }
             // needs to also update username in thoughts
-            Thought.updateMany({ username: userData.username }, { username: body.username });
-            res.json({ message: "User information updated." });
+            return Thought.updateMany({ userId: params.id }, { username: userData.username });
         })
+        .then(data => res.json(data))
         .catch(err => res.status(400).json(err));
     },
 
-    // delete a single user
-    //// -=-todo: delete thoughts upon user deletion-=- ////
+    // delete a single user (along with their thoughts)
     deleteUser({ params }, res) {
         User.findOneAndDelete({ _id: params.id })
         .then(userData => {
@@ -103,10 +101,44 @@ const userController = {
                 res.status(404).json({ message: "No user found." });
                 return;
             }
+            return Thought.deleteMany({ userId: params.id });
+        })
+        .then(data => res.json(data))
+        .catch(err => res.status(400).json(err));
+    },
+
+    // friends!
+    // add another user as a friend
+    addFriend({ params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.userId },
+            { $push: { friends: params.friendId } },
+            { new: true, runValidators: true })
+        .then(userData => {
+            if (!userData) {
+                res.status(404).json({ message: "User not found." });
+                return;
+            }
             res.json(userData);
         })
         .catch(err => res.status(400).json(err));
     },
+
+    // delete user from friends
+    removeFriend({ params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.userId },
+            { $pull: { friends: params.friendId } },
+            { new: true, runValidators: true })
+        .then(userData => {
+            if (!userData) {
+                res.status(404).json({ message: "User not found." });
+                return;
+            }
+            res.json(userData);
+        })
+        .catch(err => res.status(400).json(err));
+    }
 };
 
 // export controllers
