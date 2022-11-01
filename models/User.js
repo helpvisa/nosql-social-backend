@@ -20,7 +20,10 @@ const UserSchema = new Schema(
             type: String,
             unique: true,
             required: true,
-            validate: [validateEmail, 'Please provide a valid email address.'],
+            validate: {
+                validator: validateEmail,
+                message: 'Please provide a valid email address.'
+            },
         },
         thoughts: [{
             type: Schema.Types.ObjectId,
@@ -32,7 +35,7 @@ const UserSchema = new Schema(
         }]
     },
     {
-        toJson: {
+        toJSON: {
             virtuals: true,
             getters: true
         }

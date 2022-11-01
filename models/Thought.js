@@ -3,8 +3,8 @@ const { Schema, model, Types } = require('mongoose');
 const formatDate = require('../utils/formatDate');
 
 // validators
-function validateLength(length) {
-    return (length < 280 && length > 0);
+function validateLength(str) {
+    return (str.length < 280 && str.length > 0);
 }
 
 // schemas
@@ -17,10 +17,17 @@ const ReactionSchema = new Schema(
         reactionBody: {
             type: String,
             required: true,
-            validate: [validateLength, 'Please make sure your reaction is between 1 and 280 characters.'],
+            validate: {
+                validator: validateLength,
+                message: 'Please make sure your reaction is between 1 and 280 characters.'
+            },
         },
         username: {
             type: String,
+            required: true,
+        },
+        userId: {
+            type: Schema.Types.ObjectId,
             required: true,
         },
         createdAt: {
@@ -30,7 +37,7 @@ const ReactionSchema = new Schema(
         }
     },
     {
-        toJson: {
+        toJSON: {
             getters: true
         }
     }
@@ -41,7 +48,10 @@ const ThoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
-            validate: [validateLength, 'Please make sure your thought is between 1 and 280 characters.'],
+            validate: {
+                validator: validateLength,
+                message: 'Please make sure your thought is between 1 and 280 characters.'
+            },
         },
         createdAt: {
             type: Date,
@@ -52,10 +62,14 @@ const ThoughtSchema = new Schema(
             type: String,
             required: true,
         },
+        userId: {
+            type: Schema.Types.ObjectId,
+            required: true,
+        },
         reactions: [ReactionSchema]
     },
     {
-        toJson: {
+        toJSON: {
             virtuals: true,
             getters: true
         }
