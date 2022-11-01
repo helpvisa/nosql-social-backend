@@ -6,21 +6,25 @@ const thoughtController = { // i'm in your mind...
     // api functions go here
     // create a thought
     createThought({ body }, res) {
-        Thought.create(body)
+        User.findOne({ _id: body.userId })
+        .then(userData => {
+            if (!userData) {
+                res.status(404).json({ message: "No user found." });
+                return;
+            }
+            return Thought.create({
+                thoughtText: body.thoughtText,
+                username: userData.username,
+                userId: body.userId
+            });
+        })
         .then(({ _id }) => {
             return User.findOneAndUpdate(
                 { _id: body.userId },
                 { $push: { thoughts: _id }},
-                { new: true }
-            )
+                { new: true })
         })
-        .then(thoughtData => {
-            if (!thoughtData) {
-                res.status(404).json({ message: "No user found." });
-                return;
-            }
-            res.json(thoughtData);
-        })
+        .then(data => res.json(data))
         .catch(err => res.status(400).json(err));
     },
 
@@ -57,7 +61,7 @@ const thoughtController = { // i'm in your mind...
 
     // update a thought by _id
     updateThought({ params, body }, res) {
-        Thought.findOneAndUpdate({ _id: params.id }, body, {new: true, runValidators: true})
+        Thought.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
         .then(thoughtData => {
             if (!thoughtData) {
                 res.status(404).json({ message: "No thought found." });

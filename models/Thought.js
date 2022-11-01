@@ -17,6 +17,7 @@ const ReactionSchema = new Schema(
         reactionBody: {
             type: String,
             required: true,
+            trim: true,
             validate: {
                 validator: validateLength,
                 message: 'Please make sure your reaction is between 1 and 280 characters.'
@@ -24,10 +25,6 @@ const ReactionSchema = new Schema(
         },
         username: {
             type: String,
-            required: true,
-        },
-        userId: {
-            type: Schema.Types.ObjectId,
             required: true,
         },
         createdAt: {
@@ -48,6 +45,7 @@ const ThoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
+            trim: true,
             validate: {
                 validator: validateLength,
                 message: 'Please make sure your thought is between 1 and 280 characters.'
