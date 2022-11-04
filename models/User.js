@@ -3,8 +3,7 @@ const { Schema, model} = require('mongoose');
 
 // validators
 function validateEmail(email) {
-    const regex = new RegExp("/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/");
-    return regex.test(email);
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email);
 }
 
 // schemas
