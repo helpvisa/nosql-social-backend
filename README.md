@@ -5,6 +5,7 @@
 - [Description](#description)
 - [Installation](#installation)
 - [Images](#images)
+- [Tutorial](#tutorial)
 
 ## Description
 
@@ -17,3 +18,7 @@ Firstly ensure that MongoDB is installed and its server is running; next, traver
 ## Images
 
 ![Preview of the endpoints in action within Insomnia.](./assets/images/preview.jpg)
+
+## Tutorial
+
+Demonstration video can be found at the [following link.](https://www.youtube.com/watch?v=hh1X34s4Nio)
